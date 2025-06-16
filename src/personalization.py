@@ -1,7 +1,6 @@
-from cloudflare_client import CloudflareClient
-from dotenv import load_dotenv
-import gradio as gr
 import os
+from dotenv import load_dotenv
+from cloudflare_client import CloudflareClient
 
 load_dotenv()
 
@@ -9,7 +8,7 @@ client = CloudflareClient(
     account_id=os.getenv("CLOUDFLARE_ACCOUNT_ID"),
     api_token=os.getenv("KV_TOKEN"),
 )
-namespace_id = "1cec39e4783741b1a8ea07bacb487614"
+namespace_id = os.getenv("NAMESPACE_ID")
 
 def chat(message, history, user_id="1234"):
     model = "@cf/google/gemma-3-12b-it"
@@ -57,33 +56,3 @@ def submit_feedback(feedback, user_id="1234"):
     client.kv.put(namespace_id, user_id, updated_preferences)
 
 
-chat_interface = gr.ChatInterface(
-    chat,
-    type="messages",
-    flagging_mode="manual",
-    flagging_options=["Like", "Spam", "Inappropriate", "Other"],
-    save_history=True
-)
-
-feedback_interface = gr.Interface(
-    fn=submit_feedback,
-    inputs=gr.Textbox(
-        label="Your Feedback",
-        placeholder="e.g., 'Please be more concise in your responses' or 'I prefer technical explanations with code examples'",
-        lines=5
-    ),
-    outputs=gr.Textbox(
-        label="Status",
-        lines=8
-    ),
-    title="Provide Feedback",
-    description="Help improve your AI assistant by providing feedback about your preferences."
-)
-
-demo = gr.TabbedInterface(
-    [chat_interface, feedback_interface], 
-    ["Chat", "Feedback"]
-)
-
-if __name__ == "__main__":
-    demo.launch()
