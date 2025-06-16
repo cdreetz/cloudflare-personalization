@@ -2,6 +2,8 @@
 
 Chat app that automatically personalizes AI responses using Cloudflare AI and KV storage.
 
+https://github.com/user-attachments/assets/9ebf64de-d59c-4445-ad1a-d905e1086d0a
+
 ## What it does
 
 - Uses Cloudflare AI for chat responses
@@ -16,6 +18,8 @@ uv sync
 ```
 
 or
+
+
 
 ```bash
 python3 -m venv env
